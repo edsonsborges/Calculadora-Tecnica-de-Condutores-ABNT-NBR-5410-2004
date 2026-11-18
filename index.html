@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Técnica de Condutores - ABNT NBR 5410 | Datalink</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --dlk-blue: #003B5C;
+            --dlk-blue-hover: #002d47;
+            --dlk-red: #E30613;
+            --dlk-gray-bg: #F4F6F8;
+            --dlk-card-bg: #FFFFFF;
+            --dlk-text-dark: #1E293B;
+        }
+        body {
+            background-color: var(--dlk-gray-bg);
+            color: var(--dlk-text-dark);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        .header-datalink {
+            background-color: var(--dlk-blue);
+            border-bottom: 4px solid var(--dlk-red);
+        }
+        .card-datalink {
+            background: var(--dlk-card-bg);
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.05), 0 2px 6px -2px rgba(0, 0, 0, 0.03);
+            border: 1px solid #E2E8F0;
+        }
+        .card-header-accent {
+            border-top: 4px solid var(--dlk-blue);
+        }
+        input, select {
+            border: 1px solid #CBD5E1;
+            padding: 0.6rem 0.75rem;
+            border-radius: 0.375rem;
+            width: 100%;
+            transition: all 0.2s ease-in-out;
+            font-size: 0.875rem;
+            background-color: #FAFAFA;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--dlk-blue);
+            background-color: #FFFFFF;
+            box-shadow: 0 0 0 3px rgba(0, 59, 92, 0.15);
+        }
+        .badge-red {
+            background-color: #FEE2E2;
+            color: var(--dlk-red);
+        }
+        .badge-green {
+            background-color: #DCFCE7;
+            color: #166534;
+        }
+        .table-datalink th {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.75rem 1rem;
+            background-color: var(--dlk-blue);
+        }
+        .table-datalink td {
+            font-size: 0.85rem;
+            padding: 0.7rem 1rem;
+            border-bottom: 1px solid #E2E8F0;
+        }
+        .logo-img {
+            max-height: 48px;
+            width: auto;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Navbar Estilo Datalink -->
+    <header class="header-datalink text-white py-4 px-4 md:px-8 shadow-md mb-8">
+        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <img src="image_32c893.png" alt="Datalink Logo" class="logo-img bg-white p-1.5 rounded shadow-sm" onerror="this.style.display='none'; document.getElementById('text-logo').style.display='block';">
+                <div id="text-logo" style="display:none;" class="font-extrabold text-2xl tracking-tight italic">
+                    DATA<span class="text-red-500">LINK</span>
+                </div>
+            </div>
+            <div class="text-center sm:text-right">
+                <h1 class="text-lg font-bold tracking-wide text-white uppercase">Calculadora Técnica de Condutores</h1>
+                <p class="text-xs text-gray-200">Auditoria & Dimensionamento Conforme <span class="font-bold text-red-400">ABNT NBR 5410:2004</span></p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="max-w-6xl mx-auto px-4 md:px-8 space-y-8 flex-1 w-full pb-12">
+
+        <!-- Bloco 1: Dimensionamento Normativo Completo NBR 5410 -->
+        <div class="card-datalink p-6 border-t-4 border-red-600">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b pb-3 border-slate-200 mb-5">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-red-600"></span>
+                    <h2 class="font-bold text-slate-800 text-xs uppercase tracking-wider">1. Dimensionamento Normativo NBR 5410 (Ampacidade + Queda de Tensão + Seção Mínima)</h2>
+                </div>
+                <span class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded border">Tabelas 36 a 42 e 47 | Item 6.2.7</span>
+            </div>
+
+            <!-- Linha 1 de Parâmetros Normativos -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Corrente de Projeto I<sub>B</sub> (A)</label>
+                    <input type="number" id="nbr-current" value="20" step="0.5" min="0.1" oninput="calculateNBR5410()" class="font-mono font-bold text-slate-900">
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Material & Isolação (Tab. 35)</label>
+                    <select id="nbr-mat-insul" onchange="calculateNBR5410()" class="font-medium text-slate-800">
+                        <option value="cu_pvc" selected>Cobre - PVC (70°C)</option>
+                        <option value="cu_xlpe">Cobre - EPR / XLPE (90°C)</option>
+                        <option value="al_pvc">Alumínio - PVC (70°C) [≥16mm²]</option>
+                        <option value="al_xlpe">Alumínio - EPR / XLPE (90°C) [≥16mm²]</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Método de Referência (Tab. 33)</label>
+                    <select id="nbr-method" onchange="calculateNBR5410()" class="font-medium text-slate-800">
+                        <option value="A1">A1 - Embutido parede isolante (unip.)</option>
+                        <option value="A2">A2 - Embutido parede isolante (mult.)</option>
+                        <option value="B1" selected>B1 - Eletroduto embutido/aparente (unip.)</option>
+                        <option value="B2">B2 - Eletroduto embutido/aparente (mult.)</option>
+                        <option value="C">C - Direto parede/teto/bandeja n/ perf.</option>
+                        <option value="D">D - Enterrado em eletroduto (Solo 20°C)</option>
+                        <option value="E">E - Bandeja perfurada / Ar livre (mult.)</option>
+                        <option value="F">F - Bandeja perfurada / Ar livre (unip.)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Condutores Carregados (6.2.5.6)</label>
+                    <select id="nbr-loaded" onchange="calculateNBR5410()" class="font-medium text-slate-800">
+                        <option value="2" selected>2 condutores (Mono / Bifásico s/ N)</option>
+                        <option value="3">3 condutores (Trifásico / Bifásico c/ N)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Linha 2 de Parâmetros Normativos -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Temp. Ambiente / Solo (Tab. 40)</label>
+                    <select id="nbr-temp" onchange="calculateNBR5410()" class="font-medium text-slate-800">
+                        <!-- Preenchido dinamicamente conforme PVC/XLPE -->
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Agrupamento Circuitos (Tab. 42)</label>
+                    <select id="nbr-grouping" onchange="calculateNBR5410()" class="font-medium text-slate-800">
+                        <option value="1.00" selected>1 circuito (Fator 1,00)</option>
+                        <option value="0.80">2 circuitos (Fator 0,80)</option>
+                        <option value="0.70">3 circuitos (Fator 0,70)</option>
+                        <option value="0.65">4 circuitos (Fator 0,65)</option>
+                        <option value="0.60">5 circuitos (Fator 0,60)</option>
+                        <option value="0.57">6 circuitos (Fator 0,57)</option>
+                        <option value="0.54">7 circuitos (Fator 0,54)</option>
+                        <option value="0.52">8 circuitos (Fator 0,52)</option>
+                        <option value="0.50">9 a 11 circuitos (Fator 0,50)</option>
+                        <option value="0.45">12 a 15 circuitos (Fator 0,45)</option>
+                        <option value="0.41">16 a 19 circuitos (Fator 0,41)</option>
+                        <option value="0.38">≥ 20 circuitos (Fator 0,38)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Aplicação / Seção Mín. (Tab. 47)</label>
+                    <select id="nbr-usage" onchange="calculateNBR5410()" class="font-medium text-slate-800">
+                        <option value="2.5" selected>Força / Tomadas (Mín. 2,5 mm² Cu)</option>
+                        <option value="1.5">Iluminação (Mín. 1,5 mm² Cu)</option>
+                        <option value="0.5">Sinalização / Controle (Mín. 0,5 mm² Cu)</option>
+                        <option value="10.0">Circuitos Extra-Baixa Tensão Potência (10 mm²)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Limite Queda Tensão (Item 6.2.7.1)</label>
+                    <select id="nbr-vdrop-limit" onchange="calculateNBR5410()" class="font-medium text-slate-800">
+                        <option value="4" selected>4% - Circuito Terminal (Geral)</option>
+                        <option value="7">7% - Subestação Própria (Origem-Carga)</option>
+                        <option value="5">5% - Ponto Entrega BT (Origem-Carga)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Painel de Resultado da Recomendação Normativa -->
+            <div class="bg-slate-900 text-white p-5 rounded-lg grid grid-cols-1 lg:grid-cols-12 gap-6 items-center shadow-inner">
+                <div class="lg:col-span-4 border-b lg:border-b-0 lg:border-r border-slate-700 pb-4 lg:pb-0 lg:pr-4">
+                    <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Bitola Final Recomendada (NBR 5410)</span>
+                    <div class="flex items-baseline gap-3 mt-1">
+                        <span class="text-3xl font-extrabold text-white font-mono"><span id="rec-section">2.5</span> mm²</span>
+                        <span class="text-xs font-mono text-slate-300">(≈ <span id="rec-awg">13.3</span> AWG)</span>
+                    </div>
+                    <div class="mt-2 text-[11px] font-mono text-emerald-400">
+                        Capacidade Corrigida I<sub>z</sub>: <strong id="rec-iz">24.0</strong> A
+                    </div>
+                </div>
+
+                <div class="lg:col-span-5 space-y-1.5 text-xs font-mono">
+                    <div class="flex justify-between">
+                        <span class="text-slate-400">Fator Correção Total (f<sub>t</sub> × f<sub>g</sub>):</span>
+                        <span id="rec-factor" class="text-white font-bold">1.00</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-400">Corrente Fictícia (I<sub>B</sub> / f<sub>total</sub>):</span>
+                        <span id="rec-ib-corr" class="text-white font-bold">20.00 A</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-400">Critério Determinante:</span>
+                        <span id="rec-criteria" class="text-amber-400 font-bold">Capacidade de Corrente</span>
+                    </div>
+                    <div id="rec-alerts" class="text-[11px] text-amber-300 pt-1 leading-snug"></div>
+                </div>
+
+                <div class="lg:col-span-3 flex flex-col gap-2">
+                    <button type="button" onclick="applyRecommendedToSimulator()" class="w-full bg-red-600 hover:bg-red-700 text-white text-[11px] font-bold uppercase tracking-wider px-4 py-3 rounded transition cursor-pointer shadow text-center">
+                        Simular Bitola Abaixo ↓
+                    </button>
+                    <span class="text-[10px] text-slate-400 text-center">Sincroniza seção, material e corrente</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bloco 2: Simulador Físico-Químico e Queda de Tensão -->
+        <div class="card-datalink p-6 card-header-accent">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <!-- Coluna 1: Especificações do Fio -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-2 border-b pb-2 border-slate-200">
+                        <span class="w-2.5 h-2.5 rounded-full bg-blue-800"></span>
+                        <h2 class="font-bold text-slate-800 text-xs uppercase tracking-wider">2. Especificações do Condutor</h2>
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 mb-1 uppercase">Material do Condutor</label>
+                        <select id="material" onchange="calculate()" class="font-medium text-slate-800">
+                            <option value="copper">Cobre Nu (Cu - 100% IACS)</option>
+                            <option value="tinned_copper">Cobre Estanhado (99,9% Cu / 0,1% Sn)</option>
+                            <option value="aluminum">Alumínio (Al - 61% IACS)</option>
+                            <option value="copper_clad_steel">Aço Cobreado 40% (CCS - Telecom/Sinal)*</option>
+                            <option value="copper_clad_aluminum_10">Alumínio Cobreado 10% (CCA - Sinal)*</option>
+                            <option value="silver">Prata (Ag - Referência)</option>
+                            <option value="gold">Ouro (Au - Referência)</option>
+                        </select>
+                        <p id="mat-norm-note" class="text-[10px] text-slate-500 mt-1"></p>
+                    </div>
+                    
+                    <div class="grid grid-cols-3 gap-2">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">AWG</label>
+                            <input type="number" id="input-awg" value="13.3" step="0.1" oninput="updateFromAWG()" class="font-mono">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Seção (mm²)</label>
+                            <input type="number" id="input-section" value="2.5" step="0.0001" min="0" oninput="updateFromSection()" class="font-mono">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Diâmetro (mm)</label>
+                            <input type="number" id="input-diameter" value="1.7841" step="0.0001" min="0" oninput="updateFromDiameter()" class="font-mono">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 mb-1 uppercase">Qtd. de Fios na Corda (Formação)</label>
+                        <input type="number" id="strands" value="1" step="1" min="1" oninput="calculate()" class="font-mono">
+                    </div>
+                </div>
+
+                <!-- Coluna 2: Circuito & Condições -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-2 border-b pb-2 border-slate-200">
+                        <span class="w-2.5 h-2.5 rounded-full bg-slate-700"></span>
+                        <h2 class="font-bold text-slate-800 text-xs uppercase tracking-wider">3. Parâmetros do Circuito</h2>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Comprimento L (m)</label>
+                            <input type="number" id="length" value="30" step="1" min="1" oninput="calculate(); calculateNBR5410();" class="font-mono">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Temp. Operação (°C)</label>
+                            <input type="number" id="temp" value="70" step="1" oninput="calculate(); calculateNBR5410();" class="font-mono">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Tensão (V)</label>
+                            <input type="number" id="voltage" value="220" step="1" min="0.1" oninput="calculate(); calculateNBR5410();" class="font-mono">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Potência (W)</label>
+                            <input type="number" id="power" value="4400" step="10" min="0" oninput="syncPowerToCurrent()" class="font-mono">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Fator Pot. (cos φ)</label>
+                            <input type="number" id="pf" value="1.00" step="0.01" min="0.1" max="1" oninput="calculate(); calculateNBR5410();" class="font-mono">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Sistema (Queda de Tensão)</label>
+                        <select id="circuit-system" onchange="calculate(); calculateNBR5410();" class="font-medium text-slate-800">
+                            <option value="2" selected>Monofásico / Bifásico (2 × L - Ida e Volta)</option>
+                            <option value="1.73205">Trifásico Equilibrado (√3 × L)</option>
+                            <option value="1">Condutor Único / Simples (1 × L)</option>
+                        </select>
+                    </div>
+
+                    <div class="bg-slate-100 p-2.5 rounded border border-slate-200 text-xs text-slate-600 flex justify-between items-center">
+                        <span class="font-bold uppercase text-[10px] text-slate-500">Seção Total da Corda:</span>
+                        <span class="font-mono font-bold text-slate-900"><span id="total-section-display">2.5000</span> mm²</span>
+                    </div>
+                </div>
+
+                <!-- Coluna 3: Painel de Resultados -->
+                <div class="flex flex-col justify-between space-y-3">
+                    <div class="flex items-center gap-2 border-b pb-2 border-slate-200">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                        <h2 class="font-bold text-slate-800 text-xs uppercase tracking-wider">4. Resultados Calculados</h2>
+                    </div>
+
+                    <div class="bg-slate-50 border border-slate-200 rounded-lg p-4 grid grid-cols-2 gap-4">
+                        <div>
+                            <span class="block text-[10px] font-bold text-slate-400 uppercase">Resistência R(T)</span>
+                            <div class="text-lg font-extrabold text-slate-800 font-mono mt-0.5"><span id="res-total">0.00</span> Ω</div>
+                        </div>
+
+                        <div>
+                            <span class="block text-[10px] font-bold text-blue-800 uppercase">Corrente Projeto (I<sub>B</sub>)</span>
+                            <div class="text-lg font-extrabold text-blue-900 font-mono mt-0.5"><span id="current-nominal">0.00</span> A</div>
+                        </div>
+
+                        <div>
+                            <span class="block text-[10px] font-bold text-slate-400 uppercase">Perda Joule (ΔP)</span>
+                            <div class="text-lg font-extrabold text-slate-800 font-mono mt-0.5"><span id="power-loss">0.00</span> W</div>
+                        </div>
+
+                        <div>
+                            <span class="block text-[10px] font-bold text-slate-400 uppercase">Peso do Lance</span>
+                            <div class="text-lg font-extrabold text-slate-800 font-mono mt-0.5"><span id="weight-total">0.00</span> kg</div>
+                        </div>
+
+                        <div class="col-span-2 pt-2 border-t border-slate-200 flex items-center justify-between">
+                            <div>
+                                <span class="block text-[10px] font-bold text-red-600 uppercase">Queda de Tensão (ΔV)</span>
+                                <div class="text-xl font-extrabold text-red-600 font-mono mt-0.5"><span id="vdrop-total">0.00</span> V</div>
+                                <span id="vdrop-status" class="block text-[10px] font-semibold text-emerald-700 mt-0.5">✓ Dentro do limite NBR 5410</span>
+                            </div>
+                            <span id="vdrop-badge" class="inline-block text-xs font-bold px-2.5 py-1 rounded badge-green font-mono"><span id="vdrop-pct">0.00</span>%</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Tabela Comparativa (Resultado por Material) -->
+        <div class="card-datalink overflow-hidden">
+            <div class="bg-slate-900 text-white px-5 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <h2 class="font-bold uppercase text-xs tracking-wider flex items-center gap-2">
+                    <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    Comparativo de Desempenho por Material (Mesma Seção e Circuito)
+                </h2>
+                <span class="text-[11px] text-slate-400">NBR 5410 (6.2.3.7): Linhas de potência admitem apenas Cobre ou Alumínio</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left table-datalink">
+                    <thead>
+                        <tr>
+                            <th>Material</th>
+                            <th>Status NBR 5410 (Potência)</th>
+                            <th>Resistência R(T)</th>
+                            <th>Queda de Tensão</th>
+                            <th>Perda Joule (W)</th>
+                            <th>Peso (kg/km)</th>
+                            <th>Peso Lance (kg)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="compare-body">
+                        <!-- Gerado via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tabela de Propriedades dos Materiais -->
+        <div class="card-datalink overflow-hidden">
+            <div class="bg-slate-100 px-5 py-3 border-b border-slate-200 flex justify-between items-center">
+                <h2 class="font-bold text-slate-700 uppercase text-xs tracking-wider">
+                    Referência de Propriedades Físico-Químicas (20°C)
+                </h2>
+                <span class="text-[11px] text-slate-500">IEC 60028 / ASTM B566</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left table-datalink">
+                    <thead>
+                        <tr>
+                            <th class="!bg-slate-700">Material</th>
+                            <th class="!bg-slate-700">Resistiv. (ρ) <br><small class="normal-case text-slate-300">Ω·mm²/m</small></th>
+                            <th class="!bg-slate-700">Coef. Térmico (α) <br><small class="normal-case text-slate-300">/°C</small></th>
+                            <th class="!bg-slate-700">Peso Espec. (δ) <br><small class="normal-case text-slate-300">g/cm³</small></th>
+                            <th class="!bg-slate-700">IACS %</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ref-table-body">
+                        <!-- Gerado via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Memorial de Cálculo e Conformidade Normativa -->
+        <div class="card-datalink overflow-hidden border-t-4 border-slate-700">
+            <div class="bg-slate-800 text-white px-5 py-3 flex items-center justify-between">
+                <h2 class="font-bold uppercase text-xs tracking-wider flex items-center gap-2">
+                    <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 002 2v14a2 2 0 002 2z"></path></svg>
+                    Memorial de Cálculo & Conformidade ABNT NBR 5410:2004
+                </h2>
+                <span class="text-[11px] text-slate-400">Critérios Auditados</span>
+            </div>
+            <div class="p-6 bg-slate-50 text-xs text-slate-700 space-y-6">
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- 1. Capacidade de Condução -->
+                    <div class="bg-white p-4 rounded-md border border-slate-200 shadow-sm space-y-2">
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-red-600 font-mono text-sm">01.</span>
+                            <h3 class="font-bold uppercase text-slate-800 text-[11px]">Capacidade de Corrente (6.2.5)</h3>
+                        </div>
+                        <p class="text-slate-600 leading-relaxed">A capacidade corrigida I<sub>z</sub> deve superar ou igualar a corrente de projeto I<sub>B</sub>:</p>
+                        <div class="bg-slate-100 p-2.5 rounded font-mono text-[11px] text-slate-800 border border-slate-200 text-center">
+                            I<sub>z</sub> = I<sub>0</sub> · f<sub>t</sub> · f<sub>g</sub> ≥ I<sub>B</sub>
+                        </div>
+                        <ul class="text-[10px] text-slate-500 space-y-1 pt-1 font-mono">
+                            <li>• <strong>I<sub>0</sub>:</strong> Tabelas 36 (PVC 70°C) e 37 (EPR/XLPE 90°C)</li>
+                            <li>• <strong>f<sub>t</sub>:</strong> Fator de temperatura (Tabela 40: 30°C ar / 20°C solo)</li>
+                            <li>• <strong>f<sub>g</sub>:</strong> Fator de agrupamento em feixe (Tabela 42)</li>
+                        </ul>
+                    </div>
+
+                    <!-- 2. Corrente e Resistência -->
+                    <div class="bg-white p-4 rounded-md border border-slate-200 shadow-sm space-y-2">
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-red-600 font-mono text-sm">02.</span>
+                            <h3 class="font-bold uppercase text-slate-800 text-[11px]">Resistência & Corrente (I<sub>B</sub>)</h3>
+                        </div>
+                        <p class="text-slate-600 leading-relaxed">Resistência na temperatura de operação (70°C PVC / 90°C XLPE) e corrente ativa:</p>
+                        <div class="bg-slate-100 p-2.5 rounded font-mono text-[11px] text-slate-800 border border-slate-200 space-y-1 text-center">
+                            <div>R(T) = [ ρ · (L / S) ] · [ 1 + α·(T - 20) ]</div>
+                            <div>I<sub>B(mono)</sub> = P / (V · cos φ) | I<sub>B(tri)</sub> = P / (√3 · V · cos φ)</div>
+                        </div>
+                        <ul class="text-[10px] text-slate-500 space-y-1 pt-1 font-mono">
+                            <li>• <strong>Item 6.2.3.7:</strong> Apenas Cu ou Al em linhas de energia</li>
+                            <li>• <strong>Item 6.2.3.8:</strong> Al exige S ≥ 16 mm² (ind.) ou ≥ 50 mm² (com.)</li>
+                        </ul>
+                    </div>
+
+                    <!-- 3. Queda de Tensão e Seção Mínima -->
+                    <div class="bg-white p-4 rounded-md border border-slate-200 shadow-sm space-y-2">
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-red-600 font-mono text-sm">03.</span>
+                            <h3 class="font-bold uppercase text-slate-800 text-[11px]">Queda de Tensão (6.2.7) & Tab. 47</h3>
+                        </div>
+                        <p class="text-slate-600 leading-relaxed">Verificação simultânea do limite percentual de queda de tensão e seção mínima:</p>
+                        <div class="bg-slate-100 p-2.5 rounded font-mono text-[11px] text-slate-800 border border-slate-200 space-y-1 text-center">
+                            <div>ΔV = k · R(T) · I<sub>B</sub> · cos φ</div>
+                            <div class="text-[10px] text-slate-500">ΔV% ≤ 4% (terminal) | 5% (BT) | 7% (Subest.)</div>
+                        </div>
+                        <ul class="text-[10px] text-slate-500 space-y-1 pt-1 font-mono">
+                            <li>• <strong>k:</strong> 2 (Mono/Bifásico) ou √3 (Trifásico)</li>
+                            <li>• <strong>Tab. 47:</strong> Ilum. ≥ 1,5mm² | Força/Tomada ≥ 2,5mm²</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Rodapé Institucional Datalink -->
+    <footer class="bg-slate-900 text-slate-400 py-6 text-center text-xs border-t-2 border-red-600">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p>Datalink - Qualidade e Tecnologia em Condutores Elétricos</p>
+            <p class="text-[11px] text-slate-500">Dimensionamento auditado conforme ABNT NBR 5410:2004 (Versão Corrigida 2008).</p>
+        </div>
+    </footer>
+
+    <script>
+        // Propriedades Físico-Químicas a 20°C
+        const materials = {
+            copper: { 
+                name: 'Cobre Nu (Cu)', 
+                rho: 0.017241, 
+                alpha: 0.00393, 
+                density: 8.96, 
+                iacs: 100,
+                nbrPowerAllowed: true,
+                nbrStatus: '✓ Permitido (Item 6.2.3.7)'
+            },
+            tinned_copper: { 
+                name: 'Cobre Estanhado', 
+                rho: (0.999 * 0.017241) + (0.001 * 0.115), 
+                alpha: 0.00393, 
+                density: (0.999 * 8.96) + (0.001 * 7.31),
+                iacs: 99.3,
+                nbrPowerAllowed: true,
+                nbrStatus: '✓ Permitido (Item 6.2.3.7)'
+            },
+            aluminum: { 
+                name: 'Alumínio (Al)', 
+                rho: 0.028264, 
+                alpha: 0.00403, 
+                density: 2.70, 
+                iacs: 61,
+                nbrPowerAllowed: true,
+                nbrStatus: '⚠ Restrito ≥ 16mm² (Item 6.2.3.8)'
+            },
+            copper_clad_steel: { 
+                name: 'Aço Cobreado (CCS 40%)', 
+                rho: 0.04310, 
+                alpha: 0.00378, 
+                density: 8.15, 
+                iacs: 40,
+                nbrPowerAllowed: false,
+                nbrStatus: '✕ Uso restrito a Sinal/Telecom'
+            },
+            copper_clad_aluminum_10: {
+                name: 'Alumínio Cobreado 10% (CCA)',
+                rho: 0.02656,
+                alpha: 0.00402,
+                density: (0.10 * 8.96) + (0.90 * 2.70),
+                iacs: 64.9,
+                nbrPowerAllowed: false,
+                nbrStatus: '✕ Proibido em Potência (6.2.3.7)'
+            },
+            silver: { 
+                name: 'Prata (Ag)', 
+                rho: 0.01587, 
+                alpha: 0.0038, 
+                density: 10.49, 
+                iacs: 108,
+                nbrPowerAllowed: false,
+                nbrStatus: '— Referência Laboratorial'
+            },
+            gold: { 
+                name: 'Ouro (Au)', 
+                rho: 0.0244, 
+                alpha: 0.0034, 
+                density: 19.30, 
+                iacs: 70,
+                nbrPowerAllowed: false,
+                nbrStatus: '— Referência Laboratorial'
+            }
+        };
+
+        // Tabelas 36, 37, 38 e 39 da ABNT NBR 5410:2004 (Ampacidade em A)
+        // Estrutura: { section, A1_2, A1_3, A2_2, A2_3, B1_2, B1_3, B2_2, B2_3, C_2, C_3, D_2, D_3, E_2, E_3, F_2, F_3 }
+        const nbrAmpacityData = {
+            cu_pvc: [
+                { s: 0.5,  A1_2:7,   A1_3:7,   A2_2:7,   A2_3:7,   B1_2:9,   B1_3:8,   B2_2:9,   B2_3:8,   C_2:10,  C_3:9,   D_2:12,  D_3:10,  E_2:11,  E_3:9,   F_2:11,  F_3:8 },
+                { s: 0.75, A1_2:9,   A1_3:9,   A2_2:9,   A2_3:9,   B1_2:11,  B1_3:10,  B2_2:11,  B2_3:10,  C_2:13,  C_3:11,  D_2:15,  D_3:12,  E_2:14,  E_3:12,  F_2:14,  F_3:11 },
+                { s: 1.0,  A1_2:11,  A1_3:10,  A2_2:11,  A2_3:10,  B1_2:14,  B1_3:12,  B2_2:13,  B2_3:12,  C_2:15,  C_3:14,  D_2:18,  D_3:15,  E_2:17,  E_3:14,  F_2:17,  F_3:13 },
+                { s: 1.5,  A1_2:14.5,A1_3:13.5,A2_2:14,  A2_3:13,  B1_2:17.5,B1_3:15.5,B2_2:16.5,B2_3:15,  C_2:19.5,C_3:17.5,D_2:22,  D_3:18,  E_2:22,  E_3:18.5,F_2:22,  F_3:17 },
+                { s: 2.5,  A1_2:19.5,A1_3:18,  A2_2:18.5,A2_3:17.5,B1_2:24,  B1_3:21,  B2_2:23,  B2_3:20,  C_2:27,  C_3:24,  D_2:29,  D_3:24,  E_2:30,  E_3:25,  F_2:31,  F_3:24 },
+                { s: 4.0,  A1_2:26,  A1_3:24,  A2_2:25,  A2_3:23,  B1_2:32,  B1_3:28,  B2_2:30,  B2_3:27,  C_2:36,  C_3:32,  D_2:38,  D_3:31,  E_2:40,  E_3:34,  F_2:41,  F_3:33 },
+                { s: 6.0,  A1_2:34,  A1_3:31,  A2_2:32,  A2_3:29,  B1_2:41,  B1_3:36,  B2_2:38,  B2_3:34,  C_2:46,  C_3:41,  D_2:47,  D_3:39,  E_2:51,  E_3:43,  F_2:53,  F_3:43 },
+                { s: 10.0, A1_2:46,  A1_3:42,  A2_2:43,  A2_3:39,  B1_2:57,  B1_3:50,  B2_2:52,  B2_3:46,  C_2:63,  C_3:57,  D_2:63,  D_3:52,  E_2:70,  E_3:60,  F_2:73,  F_3:60 },
+                { s: 16.0, A1_2:61,  A1_3:56,  A2_2:57,  A2_3:52,  B1_2:76,  B1_3:68,  B2_2:69,  B2_3:62,  C_2:85,  C_3:76,  D_2:81,  D_3:67,  E_2:94,  E_3:80,  F_2:99,  F_3:82 },
+                { s: 25.0, A1_2:80,  A1_3:73,  A2_2:75,  A2_3:68,  B1_2:101, B1_3:89,  B2_2:90,  B2_3:80,  C_2:112, C_3:96,  D_2:104, D_3:86,  E_2:119, E_3:101, F_2:131, F_3:110 },
+                { s: 35.0, A1_2:99,  A1_3:89,  A2_2:92,  A2_3:83,  B1_2:125, B1_3:110, B2_2:111, B2_3:99,  C_2:138, C_3:119, D_2:125, D_3:103, E_2:148, E_3:126, F_2:162, F_3:137 },
+                { s: 50.0, A1_2:119, A1_3:108, A2_2:110, A2_3:99,  B1_2:151, B1_3:134, B2_2:133, B2_3:118, C_2:168, C_3:144, D_2:148, D_3:122, E_2:180, E_3:153, F_2:196, F_3:167 },
+                { s: 70.0, A1_2:151, A1_3:136, A2_2:139, A2_3:125, B1_2:192, B1_3:171, B2_2:168, B2_3:149, C_2:213, C_3:184, D_2:183, D_3:151, E_2:232, E_3:196, F_2:251, F_3:216 },
+                { s: 95.0, A1_2:182, A1_3:164, A2_2:167, A2_3:150, B1_2:232, B1_3:207, B2_2:201, B2_3:179, C_2:258, C_3:223, D_2:216, D_3:179, E_2:282, E_3:238, F_2:304, F_3:264 },
+                { s: 120.0,A1_2:210, A1_3:188, A2_2:192, A2_3:172, B1_2:269, B1_3:239, B2_2:232, B2_3:206, C_2:299, C_3:259, D_2:246, D_3:203, E_2:328, E_3:276, F_2:352, F_3:308 },
+                { s: 150.0,A1_2:240, A1_3:216, A2_2:219, A2_3:196, B1_2:309, B1_3:275, B2_2:265, B2_3:236, C_2:344, C_3:299, D_2:278, D_3:230, E_2:379, E_3:319, F_2:406, F_3:356 },
+                { s: 185.0,A1_2:273, A1_3:245, A2_2:248, A2_3:223, B1_2:353, B1_3:314, B2_2:300, B2_3:268, C_2:392, C_3:341, D_2:312, D_3:258, E_2:434, E_3:364, F_2:463, F_3:409 },
+                { s: 240.0,A1_2:321, A1_3:286, A2_2:291, A2_3:261, B1_2:415, B1_3:370, B2_2:351, B2_3:313, C_2:461, C_3:403, D_2:361, D_3:297, E_2:514, E_3:430, F_2:546, F_3:485 },
+                { s: 300.0,A1_2:367, A1_3:328, A2_2:334, A2_3:298, B1_2:477, B1_3:426, B2_2:401, B2_3:358, C_2:530, C_3:464, D_2:408, D_3:336, E_2:593, E_3:497, F_2:629, F_3:561 }
+            ],
+            cu_xlpe: [
+                { s: 0.5,  A1_2:10,  A1_3:9,   A2_2:10,  A2_3:9,   B1_2:12,  B1_3:10,  B2_2:11,  B2_3:10,  C_2:12,  C_3:11,  D_2:14,  D_3:12,  E_2:13,  E_3:12,  F_2:13,  F_3:10 },
+                { s: 0.75, A1_2:12,  A1_3:11,  A2_2:12,  A2_3:11,  B1_2:15,  B1_3:13,  B2_2:15,  B2_3:13,  C_2:16,  C_3:14,  D_2:18,  D_3:15,  E_2:17,  E_3:15,  F_2:17,  F_3:13 },
+                { s: 1.0,  A1_2:15,  A1_3:13,  A2_2:14,  A2_3:13,  B1_2:18,  B1_3:16,  B2_2:17,  B2_3:15,  C_2:19,  C_3:17,  D_2:21,  D_3:17,  E_2:21,  E_3:18,  F_2:21,  F_3:16 },
+                { s: 1.5,  A1_2:19,  A1_3:17,  A2_2:18.5,A2_3:16.5,B1_2:23,  B1_3:20,  B2_2:22,  B2_3:19.5,C_2:24,  C_3:22,  D_2:26,  D_3:22,  E_2:26,  E_3:23,  F_2:27,  F_3:21 },
+                { s: 2.5,  A1_2:26,  A1_3:23,  A2_2:25,  A2_3:22,  B1_2:31,  B1_3:28,  B2_2:30,  B2_3:26,  C_2:33,  C_3:30,  D_2:34,  D_3:29,  E_2:36,  E_3:32,  F_2:37,  F_3:29 },
+                { s: 4.0,  A1_2:35,  A1_3:31,  A2_2:33,  A2_3:30,  B1_2:42,  B1_3:37,  B2_2:40,  B2_3:35,  C_2:45,  C_3:40,  D_2:44,  D_3:37,  E_2:49,  E_3:42,  F_2:50,  F_3:40 },
+                { s: 6.0,  A1_2:45,  A1_3:40,  A2_2:42,  A2_3:38,  B1_2:54,  B1_3:48,  B2_2:51,  B2_3:44,  C_2:58,  C_3:52,  D_2:56,  D_3:46,  E_2:63,  E_3:54,  F_2:65,  F_3:53 },
+                { s: 10.0, A1_2:61,  A1_3:54,  A2_2:57,  A2_3:51,  B1_2:75,  B1_3:66,  B2_2:69,  B2_3:60,  C_2:80,  C_3:71,  D_2:73,  D_3:61,  E_2:86,  E_3:75,  F_2:90,  F_3:74 },
+                { s: 16.0, A1_2:81,  A1_3:73,  A2_2:76,  A2_3:68,  B1_2:100, B1_3:88,  B2_2:91,  B2_3:80,  C_2:107, C_3:96,  D_2:95,  D_3:79,  E_2:115, E_3:100, F_2:121, F_3:101 },
+                { s: 25.0, A1_2:106, A1_3:95,  A2_2:99,  A2_3:89,  B1_2:133, B1_3:117, B2_2:119, B2_3:105, C_2:138, C_3:119, D_2:121, D_3:101, E_2:149, E_3:127, F_2:161, F_3:135 },
+                { s: 35.0, A1_2:131, A1_3:117, A2_2:121, A2_3:109, B1_2:164, B1_3:144, B2_2:146, B2_3:128, C_2:171, C_3:147, D_2:146, D_3:122, E_2:185, E_3:158, F_2:200, F_3:169 },
+                { s: 50.0, A1_2:158, A1_3:141, A2_2:145, A2_3:130, B1_2:198, B1_3:175, B2_2:175, B2_3:154, C_2:209, C_3:179, D_2:173, D_3:144, E_2:225, E_3:192, F_2:242, F_3:207 },
+                { s: 70.0, A1_2:200, A1_3:179, A2_2:183, A2_3:164, B1_2:253, B1_3:222, B2_2:221, B2_3:194, C_2:269, C_3:229, D_2:213, D_3:178, E_2:289, E_3:246, F_2:310, F_3:268 },
+                { s: 95.0, A1_2:241, A1_3:216, A2_2:220, A2_3:197, B1_2:306, B1_3:269, B2_2:265, B2_3:233, C_2:328, C_3:278, D_2:252, D_3:211, E_2:352, E_3:298, F_2:377, F_3:328 },
+                { s: 120.0,A1_2:278, A1_3:249, A2_2:253, A2_3:227, B1_2:354, B1_3:312, B2_2:305, B2_3:268, C_2:382, C_3:322, D_2:287, D_3:240, E_2:410, E_3:346, F_2:437, F_3:383 },
+                { s: 150.0,A1_2:318, A1_3:285, A2_2:290, A2_3:259, B1_2:407, B1_3:358, B2_2:349, B2_3:307, C_2:441, C_3:371, D_2:324, D_3:271, E_2:473, E_3:399, F_2:504, F_3:444 },
+                { s: 185.0,A1_2:362, A1_3:324, A2_2:329, A2_3:295, B1_2:464, B1_3:408, B2_2:395, B2_3:348, C_2:506, C_3:424, D_2:363, D_3:304, E_2:542, E_3:456, F_2:575, F_3:510 },
+                { s: 240.0,A1_2:424, A1_3:380, A2_2:386, A2_3:346, B1_2:546, B1_3:481, B2_2:462, B2_3:407, C_2:599, C_3:500, D_2:419, D_3:351, E_2:641, E_3:538, F_2:679, F_3:607 },
+                { s: 300.0,A1_2:486, A1_3:435, A2_2:442, A2_3:396, B1_2:628, B1_3:553, B2_2:529, B2_3:465, C_2:693, C_3:576, D_2:474, D_3:396, E_2:741, E_3:621, F_2:783, F_3:703 }
+            ],
+            al_pvc: [
+                { s: 16.0, A1_2:48,  A1_3:43,  A2_2:44,  A2_3:41,  B1_2:60,  B1_3:53,  B2_2:54,  B2_3:48,  C_2:66,  C_3:59,  D_2:62,  D_3:52,  E_2:73,  E_3:61,  F_2:73,  F_3:62 },
+                { s: 25.0, A1_2:63,  A1_3:57,  A2_2:58,  A2_3:53,  B1_2:79,  B1_3:70,  B2_2:71,  B2_3:62,  C_2:83,  C_3:73,  D_2:80,  D_3:66,  E_2:89,  E_3:78,  F_2:98,  F_3:84 },
+                { s: 35.0, A1_2:77,  A1_3:70,  A2_2:71,  A2_3:65,  B1_2:97,  B1_3:86,  B2_2:86,  B2_3:77,  C_2:103, C_3:90,  D_2:96,  D_3:80,  E_2:111, E_3:96,  F_2:122, F_3:105 },
+                { s: 50.0, A1_2:93,  A1_3:84,  A2_2:86,  A2_3:78,  B1_2:118, B1_3:104, B2_2:104, B2_3:92,  C_2:125, C_3:110, D_2:113, D_3:94,  E_2:135, E_3:117, F_2:149, F_3:128 },
+                { s: 70.0, A1_2:118, A1_3:107, A2_2:108, A2_3:98,  B1_2:150, B1_3:133, B2_2:131, B2_3:116, C_2:160, C_3:140, D_2:140, D_3:117, E_2:173, E_3:150, F_2:192, F_3:166 },
+                { s: 95.0, A1_2:142, A1_3:129, A2_2:130, A2_3:118, B1_2:181, B1_3:161, B2_2:157, B2_3:139, C_2:195, C_3:170, D_2:166, D_3:138, E_2:210, E_3:183, F_2:235, F_3:203 },
+                { s: 120.0,A1_2:164, A1_3:149, A2_2:150, A2_3:135, B1_2:210, B1_3:186, B2_2:181, B2_3:160, C_2:226, C_3:197, D_2:189, D_3:157, E_2:244, E_3:212, F_2:273, F_3:237 },
+                { s: 150.0,A1_2:189, A1_3:170, A2_2:172, A2_3:155, B1_2:241, B1_3:214, B2_2:206, B2_3:183, C_2:261, C_3:227, D_2:213, D_3:178, E_2:282, E_3:245, F_2:316, F_3:274 },
+                { s: 185.0,A1_2:215, A1_3:194, A2_2:195, A2_3:176, B1_2:275, B1_3:245, B2_2:234, B2_3:208, C_2:298, C_3:259, D_2:240, D_3:200, E_2:322, E_3:280, F_2:363, F_3:315 },
+                { s: 240.0,A1_2:252, A1_3:227, A2_2:229, A2_3:207, B1_2:324, B1_3:288, B2_2:274, B2_3:243, C_2:352, C_3:305, D_2:277, D_3:230, E_2:380, E_3:330, F_2:430, F_3:375 },
+                { s: 300.0,A1_2:289, A1_3:261, A2_2:263, A2_3:237, B1_2:372, B1_3:331, B2_2:313, B2_3:278, C_2:406, C_3:351, D_2:313, D_3:260, E_2:439, E_3:381, F_2:497, F_3:434 }
+            ],
+            al_xlpe: [
+                { s: 16.0, A1_2:64,  A1_3:58,  A2_2:60,  A2_3:55,  B1_2:79,  B1_3:71,  B2_2:72,  B2_3:64,  C_2:84,  C_3:76,  D_2:73,  D_3:61,  E_2:91,  E_3:77,  F_2:90,  F_3:76 },
+                { s: 25.0, A1_2:84,  A1_3:76,  A2_2:78,  A2_3:71,  B1_2:105, B1_3:93,  B2_2:94,  B2_3:84,  C_2:101, C_3:90,  D_2:93,  D_3:78,  E_2:108, E_3:97,  F_2:121, F_3:103 },
+                { s: 35.0, A1_2:103, A1_3:94,  A2_2:96,  A2_3:87,  B1_2:130, B1_3:116, B2_2:115, B2_3:103, C_2:126, C_3:112, D_2:112, D_3:94,  E_2:135, E_3:120, F_2:150, F_3:129 },
+                { s: 50.0, A1_2:125, A1_3:113, A2_2:115, A2_3:104, B1_2:157, B1_3:140, B2_2:138, B2_3:124, C_2:154, C_3:136, D_2:132, D_3:112, E_2:164, E_3:146, F_2:184, F_3:159 },
+                { s: 70.0, A1_2:158, A1_3:142, A2_2:145, A2_3:131, B1_2:200, B1_3:179, B2_2:175, B2_3:156, C_2:198, C_3:174, D_2:163, D_3:138, E_2:211, E_3:187, F_2:237, F_3:206 },
+                { s: 95.0, A1_2:191, A1_3:171, A2_2:175, A2_3:157, B1_2:242, B1_3:217, B2_2:210, B2_3:188, C_2:241, C_3:211, D_2:193, D_3:164, E_2:257, E_3:227, F_2:289, F_3:253 },
+                { s: 120.0,A1_2:220, A1_3:197, A2_2:201, A2_3:180, B1_2:281, B1_3:251, B2_2:242, B2_3:216, C_2:280, C_3:245, D_2:220, D_3:186, E_2:300, E_3:263, F_2:337, F_3:296 },
+                { s: 150.0,A1_2:253, A1_3:226, A2_2:230, A2_3:206, B1_2:323, B1_3:289, B2_2:277, B2_3:248, C_2:324, C_3:283, D_2:249, D_3:210, E_2:346, E_3:304, F_2:389, F_3:343 },
+                { s: 185.0,A1_2:288, A1_3:256, A2_2:262, A2_3:233, B1_2:368, B1_3:330, B2_2:314, B2_3:281, C_2:371, C_3:323, D_2:279, D_3:236, E_2:397, E_3:347, F_2:447, F_3:395 },
+                { s: 240.0,A1_2:338, A1_3:300, A2_2:307, A2_3:273, B1_2:433, B1_3:389, B2_2:368, B2_3:329, C_2:439, C_3:382, D_2:322, D_3:272, E_2:470, E_3:409, F_2:530, F_3:471 },
+                { s: 300.0,A1_2:387, A1_3:344, A2_2:352, A2_3:313, B1_2:499, B1_3:447, B2_2:421, B2_3:377, C_2:508, C_3:440, D_2:364, D_3:308, E_2:543, E_3:471, F_2:613, F_3:547 }
+            ]
+        };
+
+        // Tabela 40 da ABNT NBR 5410:2004
+        const tempFactors = {
+            air_pvc: [
+                { t: 10, f: 1.22 }, { t: 15, f: 1.17 }, { t: 20, f: 1.12 }, { t: 25, f: 1.06 },
+                { t: 30, f: 1.00, def: true }, { t: 35, f: 0.94 }, { t: 40, f: 0.87 },
+                { t: 45, f: 0.79 }, { t: 50, f: 0.71 }, { t: 55, f: 0.61 }, { t: 60, f: 0.50 }
+            ],
+            air_xlpe: [
+                { t: 10, f: 1.15 }, { t: 15, f: 1.12 }, { t: 20, f: 1.08 }, { t: 25, f: 1.04 },
+                { t: 30, f: 1.00, def: true }, { t: 35, f: 0.96 }, { t: 40, f: 0.91 },
+                { t: 45, f: 0.87 }, { t: 50, f: 0.82 }, { t: 55, f: 0.76 }, { t: 60, f: 0.71 },
+                { t: 65, f: 0.65 }, { t: 70, f: 0.58 }, { t: 75, f: 0.50 }, { t: 80, f: 0.41 }
+            ],
+            soil_pvc: [
+                { t: 10, f: 1.10 }, { t: 15, f: 1.05 }, { t: 20, f: 1.00, def: true },
+                { t: 25, f: 0.95 }, { t: 30, f: 0.89 }, { t: 35, f: 0.84 }, { t: 40, f: 0.77 },
+                { t: 45, f: 0.71 }, { t: 50, f: 0.63 }, { t: 55, f: 0.55 }, { t: 60, f: 0.45 }
+            ],
+            soil_xlpe: [
+                { t: 10, f: 1.07 }, { t: 15, f: 1.04 }, { t: 20, f: 1.00, def: true },
+                { t: 25, f: 0.96 }, { t: 30, f: 0.93 }, { t: 35, f: 0.89 }, { t: 40, f: 0.85 },
+                { t: 45, f: 0.80 }, { t: 50, f: 0.76 }, { t: 55, f: 0.71 }, { t: 60, f: 0.65 },
+                { t: 65, f: 0.60 }, { t: 70, f: 0.53 }, { t: 75, f: 0.46 }, { t: 80, f: 0.38 }
+            ]
+        };
+
+        let lastTempProfile = '';
+        let currentRecommendedSection = 2.5;
+        let currentRecommendedMaterial = 'copper';
+
+        function updateTempDropdown() {
+            const matInsul = document.getElementById('nbr-mat-insul').value;
+            const method = document.getElementById('nbr-method').value;
+            const isXlpe = matInsul.includes('xlpe');
+            const isSoil = method === 'D';
+            const profile = `${isSoil ? 'soil' : 'air'}_${isXlpe ? 'xlpe' : 'pvc'}`;
+
+            if (profile === lastTempProfile) return;
+            lastTempProfile = profile;
+
+            const select = document.getElementById('nbr-temp');
+            const prevVal = select.value;
+            select.innerHTML = '';
+
+            tempFactors[profile].forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.f;
+                const labelRef = item.def ? (isSoil ? ' - Ref. Solo' : ' - Ref. Ar') : '';
+                opt.text = `${item.t}°C${labelRef} (Fator ${item.f.toFixed(2).replace('.', ',')})`;
+                if (item.def) opt.selected = true;
+                select.appendChild(opt);
+            });
+        }
+
+        function awgToDiameter(awg) {
+            return 0.127 * Math.pow(92, (36 - awg) / 39);
+        }
+
+        function diameterToAwg(d) {
+            if (d <= 0) return 0;
+            return 36 - 39 * (Math.log(d / 0.127) / Math.log(92));
+        }
+
+        function updateFromAWG() {
+            const awg = parseFloat(document.getElementById('input-awg').value);
+            if (!isNaN(awg)) {
+                const diameter = awgToDiameter(awg);
+                const section = Math.PI * Math.pow(diameter / 2, 2);
+                document.getElementById('input-diameter').value = diameter.toFixed(4);
+                document.getElementById('input-section').value = section.toFixed(4);
+            }
+            calculate();
+        }
+
+        function updateFromSection() {
+            const section = parseFloat(document.getElementById('input-section').value);
+            if (!isNaN(section) && section > 0) {
+                const diameter = 2 * Math.sqrt(section / Math.PI);
+                const awg = diameterToAwg(diameter);
+                document.getElementById('input-diameter').value = diameter.toFixed(4);
+                document.getElementById('input-awg').value = awg.toFixed(1);
+            }
+            calculate();
+        }
+
+        function updateFromDiameter() {
+            const diameter = parseFloat(document.getElementById('input-diameter').value);
+            if (!isNaN(diameter) && diameter > 0) {
+                const section = Math.PI * Math.pow(diameter / 2, 2);
+                const awg = diameterToAwg(diameter);
+                document.getElementById('input-section').value = section.toFixed(4);
+                document.getElementById('input-awg').value = awg.toFixed(1);
+            }
+            calculate();
+        }
+
+        function syncPowerToCurrent() {
+            calculate();
+            const voltage = parseFloat(document.getElementById('voltage').value) || 220;
+            const power = parseFloat(document.getElementById('power').value) || 0;
+            const pf = parseFloat(document.getElementById('pf').value) || 1;
+            const sys = parseFloat(document.getElementById('circuit-system').value) || 2;
+            
+            let ib = 0;
+            if (voltage > 0 && pf > 0) {
+                ib = (sys === 1.73205) ? power / (Math.sqrt(3) * voltage * pf) : power / (voltage * pf);
+            }
+            if (ib > 0) {
+                document.getElementById('nbr-current').value = ib.toFixed(2);
+                calculateNBR5410();
+            }
+        }
+
+        function calculateNBR5410() {
+            updateTempDropdown();
+
+            const ib = parseFloat(document.getElementById('nbr-current').value) || 0;
+            const matInsul = document.getElementById('nbr-mat-insul').value;
+            const method = document.getElementById('nbr-method').value;
+            const loaded = document.getElementById('nbr-loaded').value;
+            const ft = parseFloat(document.getElementById('nbr-temp').value) || 1.0;
+            const fg = parseFloat(document.getElementById('nbr-grouping').value) || 1.0;
+            const minUsage = parseFloat(document.getElementById('nbr-usage').value) || 0.5;
+            const maxVdropPct = parseFloat(document.getElementById('nbr-vdrop-limit').value) || 4.0;
+
+            const length = parseFloat(document.getElementById('length').value) || 30;
+            const voltage = parseFloat(document.getElementById('voltage').value) || 220;
+            const pf = parseFloat(document.getElementById('pf').value) || 1.0;
+            const sysFactor = parseFloat(document.getElementById('circuit-system').value) || 2;
+
+            const isAluminum = matInsul.startsWith('al_');
+            const isXlpe = matInsul.includes('xlpe');
+            const condTemp = isXlpe ? 90 : 70;
+            const matObj = isAluminum ? materials.aluminum : materials.copper;
+            currentRecommendedMaterial = isAluminum ? 'aluminum' : 'copper';
+
+            // Seção mínima normativa (Tabela 47 + Item 6.2.3.8 para Alumínio >= 16mm²)
+            const effectiveMinSection = isAluminum ? Math.max(16.0, minUsage) : minUsage;
+
+            const fTotal = ft * fg;
+            const ibCorrected = fTotal > 0 ? ib / fTotal : ib;
+            const colKey = `${method}_${loaded}`;
+            const table = nbrAmpacityData[matInsul];
+
+            let chosen = null;
+            let drivingReason = 'Capacidade de Corrente (6.2.5)';
+            let alerts = [];
+
+            for (let i = 0; i < table.length; i++) {
+                const row = table[i];
+                const iz = row[colKey] * fTotal;
+
+                // Queda de tensão na temperatura máxima do condutor (70°C ou 90°C)
+                const resT = (matObj.rho * (length / row.s)) * (1 + matObj.alpha * (condTemp - 20));
+                const vDrop = sysFactor * resT * ib * pf;
+                const vDropPct = voltage > 0 ? (vDrop / voltage) * 100 : 0;
+
+                const passAmpacity = iz >= ib;
+                const passMinSec = row.s >= effectiveMinSection;
+                const passVdrop = vDropPct <= maxVdropPct;
+
+                if (passAmpacity && passMinSec && passVdrop) {
+                    chosen = { ...row, iz, vDropPct };
+                    
+                    // Identifica qual critério exigiu a maior bitola
+                    const minAmpRow = table.find(r => (r[colKey] * fTotal) >= ib);
+                    const ampSec = minAmpRow ? minAmpRow.s : 999;
+
+                    if (row.s > ampSec && row.s > effectiveMinSection) {
+                        drivingReason = `Queda de Tensão (≤ ${maxVdropPct}% em ${length}m)`;
+                    } else if (effectiveMinSection > ampSec) {
+                        drivingReason = isAluminum ? 'Seção Mín. Alumínio (16 mm² - 6.2.3.8)' : `Seção Mín. Tabela 47 (${minUsage} mm²)`;
+                    }
+                    break;
+                }
+            }
+
+            const secEl = document.getElementById('rec-section');
+            const awgEl = document.getElementById('rec-awg');
+            const izEl = document.getElementById('rec-iz');
+            const facEl = document.getElementById('rec-factor');
+            const ibCorrEl = document.getElementById('rec-ib-corr');
+            const critEl = document.getElementById('rec-criteria');
+            const alertEl = document.getElementById('rec-alerts');
+
+            facEl.innerText = fTotal.toFixed(2);
+            ibCorrEl.innerText = ibCorrected.toFixed(2) + ' A';
+
+            if (isAluminum) {
+                alerts.push('• NBR 5410 (6.2.3.8): Alumínio permitido apenas em indústrias (≥16mm²) ou comércio BD1 (≥50mm²) com pessoal BA5.');
+            }
+            if (loaded === '2' && sysFactor === 1.73205) {
+                alerts.push('• Atenção: Sistema trifásico selecionado abaixo exige 3 condutores carregados.');
+            }
+
+            if (chosen) {
+                currentRecommendedSection = chosen.s;
+                const diam = 2 * Math.sqrt(chosen.s / Math.PI);
+                secEl.innerText = chosen.s.toString().replace('.', ',');
+                awgEl.innerText = diameterToAwg(diam).toFixed(1);
+                izEl.innerText = chosen.iz.toFixed(1);
+                critEl.innerText = drivingReason;
+            } else {
+                currentRecommendedSection = 300;
+                secEl.innerText = '> 300';
+                awgEl.innerText = '< 4/0';
+                izEl.innerText = 'Excede';
+                critEl.innerText = 'Fora da faixa (Usar condutores em paralelo)';
+                alerts.push('• Corrente ou queda de tensão excede cabo único de 300 mm².');
+            }
+
+            alertEl.innerHTML = alerts.join('<br>');
+        }
+
+        function applyRecommendedToSimulator() {
+            const matInsul = document.getElementById('nbr-mat-insul').value;
+            const isXlpe = matInsul.includes('xlpe');
+            const ib = parseFloat(document.getElementById('nbr-current').value) || 20;
+            const voltage = parseFloat(document.getElementById('voltage').value) || 220;
+            const pf = parseFloat(document.getElementById('pf').value) || 1;
+            const sys = parseFloat(document.getElementById('circuit-system').value) || 2;
+
+            document.getElementById('material').value = currentRecommendedMaterial;
+            document.getElementById('strands').value = 1;
+            document.getElementById('input-section').value = currentRecommendedSection;
+            document.getElementById('temp').value = isXlpe ? 90 : 70;
+
+            const power = (sys === 1.73205) ? Math.sqrt(3) * voltage * ib * pf : voltage * ib * pf;
+            document.getElementById('power').value = Math.round(power);
+
+            updateFromSection();
+            document.getElementById('material').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function populateRefTable() {
+            const tbody = document.getElementById('ref-table-body');
+            tbody.innerHTML = '';
+            Object.keys(materials).forEach(key => {
+                const mat = materials[key];
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="font-bold text-slate-700">${mat.name}</td>
+                        <td class="font-mono text-xs">${mat.rho.toFixed(6)}</td>
+                        <td class="font-mono text-xs">${mat.alpha.toFixed(5)}</td>
+                        <td class="font-mono text-xs">${mat.density.toFixed(2)}</td>
+                        <td class="text-blue-900 font-bold font-mono">${mat.iacs}%</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function calculate() {
+            const selectedKey = document.getElementById('material').value;
+            const singleSection = parseFloat(document.getElementById('input-section').value) || 0;
+            const strands = parseInt(document.getElementById('strands').value) || 1;
+            const length = parseFloat(document.getElementById('length').value) || 0;
+            const temp = parseFloat(document.getElementById('temp').value) || 20;
+            const voltage = parseFloat(document.getElementById('voltage').value) || 0;
+            const power = parseFloat(document.getElementById('power').value) || 0;
+            const pf = parseFloat(document.getElementById('pf').value) || 1;
+            const circuitFactor = parseFloat(document.getElementById('circuit-system').value) || 2;
+            const maxVdropPct = parseFloat(document.getElementById('nbr-vdrop-limit').value) || 4.0;
+
+            const totalSection = singleSection * strands;
+            document.getElementById('total-section-display').innerText = totalSection.toFixed(4);
+
+            // Nota normativa do material selecionado
+            const selMat = materials[selectedKey];
+            const noteEl = document.getElementById('mat-norm-note');
+            if (!selMat.nbrPowerAllowed) {
+                noteEl.innerText = '⚠ NBR 5410 (6.2.3.7): Não permitido para circuitos de potência.';
+                noteEl.className = 'text-[10px] text-red-600 font-semibold mt-1';
+            } else if (selectedKey === 'aluminum' && totalSection < 16) {
+                noteEl.innerText = '⚠ NBR 5410 (6.2.3.8): Seção mínima para Alumínio é 16 mm².';
+                noteEl.className = 'text-[10px] text-amber-600 font-semibold mt-1';
+            } else {
+                noteEl.innerText = '✓ Material em conformidade com o item 6.2.3.7 da NBR 5410.';
+                noteEl.className = 'text-[10px] text-emerald-700 mt-1';
+            }
+
+            // Corrente Nominal de Projeto (Monofásico: P / (V*cosφ) | Trifásico: P / (√3*V*cosφ))
+            let currentNominal = 0;
+            if (voltage > 0 && pf > 0) {
+                currentNominal = (circuitFactor === 1.73205) 
+                    ? power / (Math.sqrt(3) * voltage * pf) 
+                    : power / (voltage * pf);
+            }
+            document.getElementById('current-nominal').innerText = currentNominal.toFixed(2);
+
+            const compareBody = document.getElementById('compare-body');
+            compareBody.innerHTML = '';
+
+            if (totalSection <= 0) {
+                document.getElementById('res-total').innerText = "0.00";
+                document.getElementById('power-loss').innerText = "0.00";
+                document.getElementById('vdrop-total').innerText = "0.00";
+                document.getElementById('vdrop-pct').innerText = "0.00";
+                document.getElementById('weight-total').innerText = "0.00";
+                return;
+            }
+
+            Object.keys(materials).forEach(key => {
+                const mat = materials[key];
+                
+                const res20 = mat.rho * (length / totalSection);
+                const resT = res20 * (1 + mat.alpha * (temp - 20));
+
+                // Queda de tensão: ΔV = k * R * I * cos(φ)
+                const vDrop = circuitFactor * resT * currentNominal * pf;
+                const vDropPct = voltage > 0 ? (vDrop / voltage) * 100 : 0;
+
+                // Perda por Efeito Joule nos condutores ativos: ΔP = N_cond * R * I²
+                const activeConductors = (circuitFactor === 1.73205) ? 3 : (circuitFactor === 2 ? 2 : 1);
+                const jouleLoss = activeConductors * resT * Math.pow(currentNominal, 2);
+
+                const weightKm = totalSection * mat.density;
+                const weightTotal = (weightKm * length) / 1000;
+
+                const isSelected = key === selectedKey;
+                if (isSelected) {
+                    document.getElementById('res-total').innerText = resT.toFixed(4);
+                    document.getElementById('power-loss').innerText = jouleLoss.toFixed(2);
+                    document.getElementById('vdrop-total').innerText = vDrop.toFixed(2);
+                    document.getElementById('vdrop-pct').innerText = vDropPct.toFixed(2);
+                    document.getElementById('weight-total').innerText = weightTotal.toFixed(3);
+
+                    const statusEl = document.getElementById('vdrop-status');
+                    const badgeEl = document.getElementById('vdrop-badge');
+                    if (vDropPct > maxVdropPct) {
+                        statusEl.innerText = `⚠ Excede limite de ${maxVdropPct}% (NBR 5410 - 6.2.7)`;
+                        statusEl.className = 'block text-[10px] font-bold text-red-600 mt-0.5';
+                        badgeEl.className = 'inline-block text-xs font-bold px-2.5 py-1 rounded badge-red font-mono';
+                    } else {
+                        statusEl.innerText = `✓ Dentro do limite NBR 5410 (≤ ${maxVdropPct}%)`;
+                        statusEl.className = 'block text-[10px] font-semibold text-emerald-700 mt-0.5';
+                        badgeEl.className = 'inline-block text-xs font-bold px-2.5 py-1 rounded badge-green font-mono';
+                    }
+                }
+
+                const row = document.createElement('tr');
+                if (isSelected) row.className = 'bg-slate-100 font-bold border-l-4 border-red-600';
+                
+                let statusBadge = mat.nbrStatus;
+                if (key === 'aluminum' && totalSection >= 16) {
+                    statusBadge = '✓ Permitido ≥16mm² (6.2.3.8)';
+                }
+
+                row.innerHTML = `
+                    <td class="${isSelected ? 'text-slate-900' : 'text-slate-700'}">${mat.name}</td>
+                    <td class="text-xs ${mat.nbrPowerAllowed ? 'text-emerald-700' : 'text-red-600'}">${statusBadge}</td>
+                    <td class="font-mono">${resT.toFixed(4)} Ω</td>
+                    <td class="font-mono ${vDropPct > maxVdropPct ? 'text-red-600 font-bold' : ''}">${vDrop.toFixed(2)} V (${vDropPct.toFixed(2)}%)</td>
+                    <td class="font-mono">${jouleLoss.toFixed(1)} W</td>
+                    <td class="font-mono">${weightKm.toFixed(2)} kg/km</td>
+                    <td class="font-mono">${weightTotal.toFixed(3)} kg</td>
+                `;
+                compareBody.appendChild(row);
+            });
+        }
+
+        window.onload = () => {
+            populateRefTable();
+            updateTempDropdown();
+            calculate();
+            calculateNBR5410();
+        };
+    </script>
+</body>
+</html>
